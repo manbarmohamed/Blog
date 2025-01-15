@@ -1,0 +1,78 @@
+# application-prod.yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    org.hibernate: ERROR
+    com.yourblog: INFO
+  file:
+    name: /var/log/blog-application.log
+    max-size: 10MB
+    max-history: 10
+
+app:
+  cors:
+    allowed-origins: https://yourblog.com
+  upload:
+    directory: /var/uploads
+
+  cache:
+    timeToLiveSeconds: 7200
+
+  mail:
+    from: noreply@yourblog.com
+    base-url: https://yourblog.com
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-stacktrace: never
+    whitelabel:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+  endpoint:
+    health:
+      show-details: never
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000 # 24 hours
+
+# SSL Configuration
