@@ -1,9 +1,18 @@
 package com.tech.blog.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
+@Table(name = "likes")
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +27,4 @@ public class Like {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
-
-    // Getters, Setters, Constructors, etc.
 }
