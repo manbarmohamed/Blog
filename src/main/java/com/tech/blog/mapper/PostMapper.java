@@ -27,8 +27,6 @@ public interface PostMapper {
 
     @Mapping(target = "author", source = "user")
     @Mapping(target = "likesCount", expression = "java(post.getLikes().size())")
-    @Mapping(target = "category", qualifiedBy = Named.class, qualifiedByName = "toCategoryResponse")
-    @Mapping(target = "tags", qualifiedBy = Named.class, qualifiedByName = "toTagResponse")
     PostResponse toResponse(Post post);
 
     @Mapping(target = "commentsCount", expression = "java(post.getComments().size())")

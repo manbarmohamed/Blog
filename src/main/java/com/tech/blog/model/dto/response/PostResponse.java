@@ -23,9 +23,9 @@ public class PostResponse {
     LocalDateTime updatedAt;
     PostStatus status;
     int views;
-    private UserSummaryResponse author;
+     UserSummaryResponse author;
     CategoryResponse category;
-    private List<TagResponse> tags;
-    private List<CommentResponse> comments;
-    private int likesCount;
+     List<TagResponse> tags;
+     List<CommentResponse> comments;
+     int likesCount;
 }
