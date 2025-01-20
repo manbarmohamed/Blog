@@ -40,5 +40,10 @@ public class CategoryController {
         return ResponseEntity.ok().body(response);
     }
 
-   
+    @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        log.info("REST request to delete Category : {}", id);
+        categoryService.delete(id);
+    }
 }
