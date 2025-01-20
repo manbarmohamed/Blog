@@ -39,7 +39,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse update(Long id, CategoryUpdateRequest request) {
-        return null;
+        log.info("Updating category with id: {}", id);
+        Category category = categoryRepository.findById(id).orElseThrow(()->
+                new ResourceNotFoundException("Category not found with id: " +id));
+        categoryMapper.updateCategoryFromDto(request, category);
+        Category updatedCategory = categoryRepository.save(category);
+        log.info("Category updated successfully with id: {}", updatedCategory.getId());
+
+        return categoryMapper.toResponse(updatedCategory);
     }
 
     @Override
@@ -62,6 +69,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse findById(Long id) {
-        return null;
+        log.info("Fetching category with id: {}", id);
+        Category category = categoryRepository.findById(id).orElseThrow(()->
+                new ResourceNotFoundException("Category not found with id: " +id));
+        return categoryMapper.toResponse(category);
     }
 }
