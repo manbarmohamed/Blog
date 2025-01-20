@@ -19,25 +19,15 @@ spring:
       fail-on-unknown-properties: false
     default-property-inclusion: non_null
 
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-file-size-threshold: 2MB
 
-server:
-  port: 8080
-  servlet:
-    context-path: /api
-  compression:
-    enabled: true
-    mime-types: application/json,application/xml,text/html,text/plain,text/css,application/javascript
+
 
 logging:
   level:
     root: INFO
     org.springframework.web: INFO
     org.hibernate: INFO
-    com.yourblog: DEBUG
+    com.tech.blog: DEBUG
 
 management:
   endpoints:
