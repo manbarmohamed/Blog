@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -52,7 +53,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponse> fetchAll() {
-        return List.of();
+        log.info("Fetching all categories");
+        List<Category> categories = categoryRepository.findAll();
+        return categories.stream()
+                .map(categoryMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
