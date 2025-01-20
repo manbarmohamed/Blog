@@ -2,6 +2,7 @@ package com.tech.blog.controller;
 
 
 import com.tech.blog.model.dto.request.CategoryCreateRequest;
+import com.tech.blog.model.dto.request.CategoryUpdateRequest;
 import com.tech.blog.model.dto.response.CategoryResponse;
 import com.tech.blog.service.interfaces.CategoryService;
 import jakarta.validation.Valid;
@@ -31,6 +32,14 @@ public class CategoryController {
         CategoryResponse response = categoryService.save(request);
         return ResponseEntity.created(URI.create("/api/v1/categories/save" + response.getId()))
                 .body(response);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<CategoryResponse> update(@PathVariable Long id,
+                                                   @RequestBody @Valid CategoryUpdateRequest request) {
+        log.info("REST request to update Category : {}", id);
+        CategoryResponse response = categoryService.update(id, request);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/findById/{id}")
