@@ -8,4 +8,5 @@ public class UserSummaryResponse {
     private String username;
     private String firstname;
     private String lastname;
+    private String profilePictureUrl;
 }

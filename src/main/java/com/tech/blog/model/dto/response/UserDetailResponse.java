@@ -13,5 +13,5 @@ public class UserDetailResponse extends BaseResponse{
     private Integer likesCount;
     private List<PostSummaryResponse> recentPosts;
     private List<CommentSummaryResponse> recentComments;
-
+    private String profilePictureUrl;
 }

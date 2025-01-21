@@ -18,5 +18,5 @@ public class UserResponse extends BaseResponse{
     private LocalDateTime updatedAt;
     private Role role;
     private Boolean isActive;
-
+    private String profilePictureUrl;
 }

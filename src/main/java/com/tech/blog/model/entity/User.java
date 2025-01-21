@@ -34,6 +34,8 @@ public class User {
 
     private Boolean isActive;
 
+    private String profilePictureUrl;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts;
 
