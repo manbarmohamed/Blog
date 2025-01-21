@@ -23,8 +23,10 @@ public interface UserMapper {
     @Mapping(target = "postsCount", expression = "java(user.getPosts().size())")
     @Mapping(target = "commentsCount", expression = "java(user.getComments().size())")
     @Mapping(target = "likesCount", expression = "java(user.getLikes().size())")
+    @Mapping(target = "profilePictureUrl", source = "profilePictureUrl")
     UserDetailResponse toDetailResponse(User user);
 
+    @Mapping(target = "profilePictureUrl", source = "profilePictureUrl")
     UserResponse toResponse(User user);
     
     UserSummaryResponse toSummaryResponse(User user);
