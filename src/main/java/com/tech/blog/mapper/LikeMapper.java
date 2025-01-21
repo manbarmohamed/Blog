@@ -7,7 +7,7 @@ import com.tech.blog.model.dto.request.LikeRequest;
 import com.tech.blog.model.dto.response.LikeResponse;
 import com.tech.blog.model.entity.Like;
 
-@Mapper(componentModel = "spring", 
+@Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         uses = {UserMapper.class, PostMapper.class})
 public interface LikeMapper {
