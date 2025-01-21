@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/categories")
@@ -37,14 +38,18 @@ public class CategoryController {
     @PutMapping("/update/{id}")
     public ResponseEntity<CategoryResponse> update(@PathVariable Long id,
                                                    @RequestBody @Valid CategoryUpdateRequest request) {
+
         log.info("REST request to update Category : {}", id);
+
         CategoryResponse response = categoryService.update(id, request);
         return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/findById/{id}")
     public ResponseEntity<CategoryResponse> findById(@PathVariable Long id) {
+
         log.info("REST request to get Category : {}", id);
+
         CategoryResponse response = categoryService.findById(id);
         return ResponseEntity.ok().body(response);
     }
@@ -52,7 +57,15 @@ public class CategoryController {
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
+
         log.info("REST request to delete Category : {}", id);
         categoryService.delete(id);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CategoryResponse>> fetchAll() {
+
+        log.info("REST request to get all Categories");
+        return ResponseEntity.ok().body(categoryService.fetchAll());
     }
 }
