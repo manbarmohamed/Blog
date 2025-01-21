@@ -89,7 +89,7 @@ public class TagController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTag(@PathVariable Long id) {
+    public void deleteTag(@PathVariable("id") Long id) {
         log.info("REST request to delete Tag: {}", id);
         tagService.delete(id);
     }
@@ -117,7 +117,7 @@ public class TagController {
             )
     })
     @GetMapping("/{id}")
-    public TagResponse findTagById(@PathVariable Long id) {
+    public TagResponse findTagById(@PathVariable("id") Long id) {
         log.info("REST request to find Tag: {}", id);
         return tagService.findById(id);
     }
