@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,25 +26,30 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
 
-
-
     @Override
     public CategoryResponse save(CategoryCreateRequest request) {
+
         log.info("Creating category Name: {}", request.getName());
 
+        request.setTimestamp(LocalDateTime.now());
         Category category = categoryMapper.toEntity(request);
         Category savedCategory = categoryRepository.save(category);
+
         log.info("Category saved successfully with id: {}", savedCategory.getId());
+
         return categoryMapper.toResponse(savedCategory);
     }
 
     @Override
     public CategoryResponse update(Long id, CategoryUpdateRequest request) {
         log.info("Updating category with id: {}", id);
-        Category category = categoryRepository.findById(id).orElseThrow(()->
-                new ResourceNotFoundException("Category not found with id: " +id));
+
+        Category category = categoryRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Category not found with id: " + id));
+
         categoryMapper.updateCategoryFromDto(request, category);
         Category updatedCategory = categoryRepository.save(category);
+
         log.info("Category updated successfully with id: {}", updatedCategory.getId());
 
         return categoryMapper.toResponse(updatedCategory);
@@ -51,16 +57,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Long id) {
+
         log.info("Deleting category with id: {}", id);
-        Category category = categoryRepository.findById(id).orElseThrow(()->
-                new ResourceNotFoundException("Category not found with id: " +id));
+
+        Category category = categoryRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Category not found with id: " + id));
+
         categoryRepository.delete(category);
+
         log.info("Category deleted successfully");
     }
 
     @Override
     public List<CategoryResponse> fetchAll() {
         log.info("Fetching all categories");
+
         List<Category> categories = categoryRepository.findAll();
         return categories.stream()
                 .map(categoryMapper::toResponse)
@@ -70,8 +81,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse findById(Long id) {
         log.info("Fetching category with id: {}", id);
-        Category category = categoryRepository.findById(id).orElseThrow(()->
-                new ResourceNotFoundException("Category not found with id: " +id));
+
+        Category category = categoryRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Category not found with id: " + id));
         return categoryMapper.toResponse(category);
     }
 }

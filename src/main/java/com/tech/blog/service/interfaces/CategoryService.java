@@ -8,12 +8,15 @@ import com.tech.blog.model.dto.response.CategoryResponse;
 import java.util.List;
 
 public interface CategoryService {
+
+
     /**
      * Save a new category
      * @param request The category creation request
      * @return The saved category response
      */
     CategoryResponse save(CategoryCreateRequest request);
+
 
     /**
      * Update an existing category
@@ -23,17 +26,20 @@ public interface CategoryService {
      */
     CategoryResponse update(Long id, CategoryUpdateRequest request);
 
+
     /**
      * Delete a category by its ID
      * @param id The category ID to delete
      */
     void delete(Long id);
 
+
     /**
      * Fetch all categories
      * @return List of all category responses
      */
     List<CategoryResponse> fetchAll();
+
 
     /**
      * Find a category by its ID
