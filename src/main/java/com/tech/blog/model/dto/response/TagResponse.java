@@ -6,5 +6,5 @@ import lombok.Data;
 public class TagResponse extends BaseResponse {
     private Long id;
     private String name;
-    private int postsCount;
+    //private Integer postsCount;
 }

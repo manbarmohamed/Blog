@@ -20,5 +20,5 @@ public class Tag {
     private String name;
 
     @ManyToMany(mappedBy = "tags")
-    private List<Post> posts;
+    private List<Post> posts ;
 }

@@ -17,7 +17,7 @@ public interface TagMapper {
     Tag toEntity(TagCreateRequest createRequest);
 
     @Named("toTagResponse")
-    @Mapping(target = "postsCount", expression = "java(tag.getPosts().size())")
+    //@Mapping(target = "postsCount", expression = "java(tag.getPosts().size())")
     TagResponse toResponse(Tag tag);
 
 //    @Named("toTagDetailResponse")
