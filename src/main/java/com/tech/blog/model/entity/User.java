@@ -1,6 +1,7 @@
 package com.tech.blog.model.entity;
 
 import com.tech.blog.model.enums.Role;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,6 +35,8 @@ public class User {
 
     private Boolean isActive;
 
+    @Nullable
+    @Column(name = "profile_picture_url")
     private String profilePictureUrl;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
