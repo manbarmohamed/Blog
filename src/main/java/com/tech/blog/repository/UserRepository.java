@@ -3,4 +3,12 @@ package com.tech.blog.repository;
 import com.tech.blog.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {}
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByUsernameOrEmail(String username, String email);
+    Boolean existsByUsername(String username);
+    Boolean existsByEmail(String email);
+    Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email);
+}
