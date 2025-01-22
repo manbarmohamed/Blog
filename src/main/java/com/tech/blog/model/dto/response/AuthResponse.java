@@ -2,9 +2,13 @@ package com.tech.blog.model.dto.response;
 
 
 import com.tech.blog.model.enums.Role;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AuthResponse extends BaseResponse{
 
     private String accessToken;
@@ -13,3 +17,4 @@ public class AuthResponse extends BaseResponse{
     private String username;
     private Role role;
 }
+
