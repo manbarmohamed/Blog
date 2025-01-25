@@ -5,6 +5,14 @@ import com.tech.blog.model.dto.request.CategoryCreateRequest;
 import com.tech.blog.model.dto.request.CategoryUpdateRequest;
 import com.tech.blog.model.dto.response.CategoryResponse;
 import com.tech.blog.service.interfaces.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +27,8 @@ import java.util.List;
 @RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Category Management", description = "APIs for managing categories")
+
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -26,9 +36,30 @@ public class CategoryController {
 
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+            summary = "Create a new category",
+            description = "Creates a new category with the provided information"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Category created successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid input",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
     public ResponseEntity<CategoryResponse> save
-            (@RequestBody @Valid
-             CategoryCreateRequest request) {
+            (@Parameter(description = "Category creation request", required = true)
+             @RequestBody @Valid
+             CategoryCreateRequest request)
+    {
         log.info("REST request to create Category");
         CategoryResponse response = categoryService.save(request);
         return ResponseEntity.created(URI.create("/api/v1/categories/save" + response.getId()))
@@ -36,8 +67,30 @@ public class CategoryController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<CategoryResponse> update(@PathVariable Long id,
-                                                   @RequestBody @Valid CategoryUpdateRequest request) {
+    @Operation(
+            summary = "Update an existing category",
+            description = "Updates a category based on the provided ID and details"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Category updated successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Category not found",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    public ResponseEntity<CategoryResponse> update(
+            @Parameter(description = "Category ID", required = true)
+            @PathVariable Long id,
+            @Parameter(description = "Category update request", required = true)
+            @RequestBody @Valid CategoryUpdateRequest request) {
 
         log.info("REST request to update Category : {}", id);
 
@@ -46,7 +99,28 @@ public class CategoryController {
     }
 
     @GetMapping("/findById/{id}")
-    public ResponseEntity<CategoryResponse> findById(@PathVariable Long id) {
+    @Operation(
+            summary = "Find category by ID",
+            description = "Retrieves a specific category based on its ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Category found successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Category not found",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    public ResponseEntity<CategoryResponse> findById(
+            @Parameter(description = "Category ID", required = true)
+            @PathVariable Long id) {
 
         log.info("REST request to get Category : {}", id);
 
@@ -56,13 +130,42 @@ public class CategoryController {
 
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    @Operation(
+            summary = "Delete a category",
+            description = "Deletes a category based on its ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Category deleted successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Category not found",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    public void delete(
+            @Parameter(description = "Category ID", required = true)
+            @PathVariable Long id) {
 
         log.info("REST request to delete Category : {}", id);
         categoryService.delete(id);
     }
 
     @GetMapping
+    @Operation(
+            summary = "Fetch all categories",
+            description = "Retrieves a list of all categories"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Successfully retrieved categories",
+            content = @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = CategoryResponse.class))
+            )
+    )
     public ResponseEntity<List<CategoryResponse>> fetchAll() {
 
         log.info("REST request to get all Categories");
