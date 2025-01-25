@@ -8,7 +8,7 @@ import lombok.Data;
 public class PostUpdateRequest {
     private String title;
     private String content;
-    private String imageUrl;
+    private String coverImageUrl;
     private Long categoryId;
     private List<Long> tagIds;
 }

@@ -5,8 +5,6 @@ import com.tech.blog.model.dto.request.PostCreateRequest;
 import com.tech.blog.model.dto.request.PostUpdateRequest;
 import com.tech.blog.model.dto.response.PostResponse;
 import com.tech.blog.model.dto.response.PostSummaryResponse;
-import com.tech.blog.model.enums.PostStatus;
-import org.mapstruct.Named;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
@@ -26,11 +24,15 @@ public interface PostMapper {
     Post toEntity(PostCreateRequest createRequest);
 
     @Mapping(target = "author", source = "user")
-    @Mapping(target = "likesCount", expression = "java(post.getLikes().size())")
+    @Mapping(target = "commentsCount", expression = "java(post.getComments() != null ? post.getComments().size() : 0)")
+    @Mapping(target = "likesCount", expression = "java(post.getLikes() != null ? post.getLikes().size() : 0)")
+    @Mapping(target = "category", source = "category")
+    @Mapping(target = "tags", source = "tags")
+    @Mapping(target = "comments", source = "comments")
     PostResponse toResponse(Post post);
 
-    @Mapping(target = "commentsCount", expression = "java(post.getComments().size())")
-    @Mapping(target = "likesCount", expression = "java(post.getLikes().size())")
+    @Mapping(target = "commentsCount", expression = "java(post.getComments() != null ? post.getComments().size() : 0)")
+    @Mapping(target = "likesCount", expression = "java(post.getLikes() != null ? post.getLikes().size() : 0)")
     PostSummaryResponse toSummaryResponse(Post post);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

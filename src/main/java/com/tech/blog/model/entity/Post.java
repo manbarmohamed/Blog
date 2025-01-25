@@ -21,8 +21,11 @@ public class Post {
     private Long id;
 
     private String title;
+
+    @Lob
     private String content;
-    private String imageUrl;
+
+    private String coverImageUrl;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -48,9 +51,9 @@ public class Post {
 
     @ManyToMany
     @JoinTable(
-        name = "post_tags",
-        joinColumns = @JoinColumn(name = "post_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
+            name = "post_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tags = new ArrayList<>();
 }

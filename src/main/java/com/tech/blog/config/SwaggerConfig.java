@@ -16,21 +16,24 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
-                .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
-                .info(apiInfo());
+                .components(new Components()
+                        .addSecuritySchemes("Bearer Authentication", createAPIKeyScheme())
+                )
+                .info(new Info()
+                        .title("Tech Blog API Documentation")
+                        .version("1.0.0")
+                        .description("API documentation for Tech Blog application")
+                        .contact(new Contact()
+                                .name("Tech Support")
+                                .email("support@techblog.com")
+                                .url("https://techblog.com"))
+                );
     }
 
     private SecurityScheme createAPIKeyScheme() {
-        return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+        return new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
                 .bearerFormat("JWT")
                 .scheme("bearer");
-    }
-
-    private Info apiInfo() {
-        return new Info()
-                .title("Authentication Service Api Doc")
-                .version("1.0.0")
-                .description("HTTP APIs to manage user registration and authentication.")
-                .contact(new Contact().name("Mohamed Manbar"));
     }
 }
