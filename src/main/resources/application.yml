@@ -17,11 +17,11 @@ spring:
     deserialization:
       fail-on-unknown-properties: false
     default-property-inclusion: non_null
+  main:
+    allow-circular-references: true
 
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-file-size-threshold: 2MB
+
+
 
 
 
