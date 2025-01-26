@@ -1,62 +1,16 @@
 spring:
   profiles:
     active: dev
-  application:
-    name: blog
-  jpa:
-    open-in-view: false
-    properties:
-      hibernate:
-        jdbc:
-          time_zone: UTC
-        format_sql: true
-
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
-    deserialization:
-      fail-on-unknown-properties: false
-    default-property-inclusion: non_null
   main:
     allow-circular-references: true
 
-
-
-
-
-
-logging:
-  level:
-    root: INFO
-    org.springframework.web: INFO
-    org.hibernate: INFO
-    com.tech.blog: DEBUG
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: when_authorized
-
-cors:
-  allowed-origins: "*"
-  allowed-methods: "*"
-  allowed-headers: "*"
-  exposed-headers: "Authorization,Link,X-Total-Count"
-  allow-credentials: true
-  max-age: 1800
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
 
 jwt:
-  secret: your-secret-key
-  expiration: 86400000 # 24 hours in milliseconds
+  secret: ${JWT_SECRET}
+  expiration: 86400000  # 24 hours
 
-app:
-  upload:
-    directory: uploads
-  async:
-    core-pool-size: 2
-    max-pool-size: 10
-    queue-capacity: 50
+

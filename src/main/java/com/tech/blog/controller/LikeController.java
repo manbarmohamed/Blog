@@ -58,7 +58,7 @@ public class LikeController {
     @GetMapping("/count")
     public ResponseEntity<Long> getLikeCount(
             @Parameter(description = "ID of the post to count likes for")
-            @RequestParam Long postId) {
+            @RequestParam("postId") Long postId) {
         log.debug("Getting like count for post {}", postId);
 
         long count = likeService.getLikeCount(postId);
