@@ -15,6 +15,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
+
     public static final String SECRET = "357638792F423F4428472B4B6250655368566D597133743677397A2443264629";
 
     public Date extractExpiration(String token) {

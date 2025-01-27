@@ -4,6 +4,7 @@ import com.tech.blog.model.dto.request.UserUpdateRequest;
 import com.tech.blog.model.dto.response.UserResponse;
 
 import com.tech.blog.service.interfaces.UserService;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,15 +34,19 @@ public class UserController {
 
     private final UserService userService;
 
+    @Operation(summary = "Update User Profile", description = "Updates the profile information of a user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User profile updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid user ID or user data"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PutMapping("/{userId}/profile")
     public ResponseEntity<UserResponse> updateProfile(
             @PathVariable Long userId,
-            @RequestBody UserUpdateRequest profileEditDTO
-            ) throws IOException {
+            @RequestBody UserUpdateRequest profileEditDTO) throws IOException {
 
         UserResponse user = userService.editUserProfile(userId, profileEditDTO);
-
-
         return ResponseEntity.ok(user);
     }
 
@@ -69,6 +74,12 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
+
+    @Operation(summary = "Get All Users", description = "Retrieves all users from the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of all users successfully retrieved"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
