@@ -120,7 +120,7 @@ public class CategoryController {
     })
     public ResponseEntity<CategoryResponse> findById(
             @Parameter(description = "Category ID", required = true)
-            @PathVariable Long id) {
+            @PathVariable("id") Long id) {
 
         log.info("REST request to get Category : {}", id);
 
