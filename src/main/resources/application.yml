@@ -12,5 +12,3 @@ cloudinary:
 jwt:
   secret: ${JWT_SECRET}
   expiration: 86400000  # 24 hours
-
-
