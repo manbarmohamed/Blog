@@ -8,5 +8,5 @@ public interface AuthService {
 
     void registerUser(RegisterRequest registerRequest);
 
-    AuthResponse LoginUser(LoginRequest loginRequest);
+    AuthResponse loginUser(LoginRequest loginRequest);
 }
