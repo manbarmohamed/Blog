@@ -111,10 +111,17 @@
 		</dependency>
 
 
+<!--		<dependency>-->
+<!--			<groupId>io.github.cdimascio</groupId>-->
+<!--			<artifactId>dotenv-java</artifactId>-->
+<!--			<version>3.0.0</version>-->
+<!--		</dependency>-->
+
 
 	</dependencies>
 
 	<build>
+		<finalName>app</finalName>
 		<plugins>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -123,25 +130,6 @@
                     <failOnError>false</failOnError>
                 </configuration>
             </plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -158,6 +146,7 @@
 							<artifactId>lombok</artifactId>
 							<version>${lombok.version}</version>
 						</path>
+						<!-- Add this as a separate path -->
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok-mapstruct-binding</artifactId>
@@ -169,8 +158,24 @@
 					</compilerArgs>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.tech.blog.BlogApplication</mainClass>
+					<layout>JAR</layout>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
-		<finalName>app</finalName>
 	</build>
 
 </project>
