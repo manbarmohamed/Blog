@@ -88,7 +88,7 @@ public class CategoryController {
     })
     public ResponseEntity<CategoryResponse> update(
             @Parameter(description = "Category ID", required = true)
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Parameter(description = "Category update request", required = true)
             @RequestBody @Valid CategoryUpdateRequest request) {
 
@@ -147,7 +147,7 @@ public class CategoryController {
     })
     public void delete(
             @Parameter(description = "Category ID", required = true)
-            @PathVariable Long id) {
+            @PathVariable("id") Long id) {
 
         log.info("REST request to delete Category : {}", id);
         categoryService.delete(id);
