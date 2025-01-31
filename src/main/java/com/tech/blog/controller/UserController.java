@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -44,7 +43,7 @@ public class UserController {
     @PutMapping("/{userId}/profile")
     public ResponseEntity<UserResponse> updateProfile(
             @PathVariable Long userId,
-            @RequestBody UserUpdateRequest profileEditDTO) throws IOException {
+            @RequestBody UserUpdateRequest profileEditDTO) {
 
         UserResponse user = userService.editUserProfile(userId, profileEditDTO);
         return ResponseEntity.ok(user);

@@ -4,11 +4,27 @@ spring:
   main:
     allow-circular-references: true
 
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000  # 24 hours
+
+server:
+  port: 8080
+  error:
+    include-stacktrace: never  # Production-safe
+
+logging:
+  level:
+    org.springframework.security: INFO
+    com.tech.blog: INFO
+
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-key: ${CLOUDINARY_API_KEY}
   api-secret: ${CLOUDINARY_API_SECRET}
 
-jwt:
-  secret: ${JWT_SECRET}
-  expiration: 86400000  # 24 hours
+app:
+  cors:
+    allowed-origins: http://localhost:4200
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-headers: Authorization,Content-Type,X-Requested-With,Accept,Origin

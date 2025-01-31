@@ -11,7 +11,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Data
 @Schema(name = "PostCreateRequest", description = "Request body for creating new post")
-public class PostCreateRequest extends BaseRequest {
+public class PostCreateRequest {
     @Schema(description = "Post title", example = "Introduction to Spring Boot", requiredMode = REQUIRED)
     @NotBlank
     @Size(min = 3, max = 255)
