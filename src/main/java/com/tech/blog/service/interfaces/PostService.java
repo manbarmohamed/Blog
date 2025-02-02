@@ -8,6 +8,8 @@ import com.tech.blog.model.dto.response.PostResponse;
 import com.tech.blog.model.dto.response.PostStatusResponse;
 import com.tech.blog.model.dto.response.PostSummaryResponse;
 
+import java.util.List;
+
 public interface PostService {
     PostResponse createPost(PostCreateRequest request);
     PostResponse updatePost(Long id, PostUpdateRequest request);
@@ -16,4 +18,6 @@ public interface PostService {
     void deletePost(Long id);
     PostStatusResponse updatePostStatus(Long id, PostStatusRequest request);
     PostResponse updatePostImage(Long id, String imageUrl);
+
+    List<PostResponse> getPostsByCategory(Long categoryId);
 }

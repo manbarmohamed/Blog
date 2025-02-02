@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,4 +30,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "(SELECT COUNT(l) FROM Like l WHERE l.post = p)) " +
             "FROM Post p")
     Page<PostSummaryResponse> findAllPostSummaries(Pageable pageable);
+
+    @Query("SELECT p FROM Post p WHERE p.category.id = :categoryId")
+    List<Post> findByCategory_Id(@Param("categoryId") Long categoryId);
+
+
+
 }

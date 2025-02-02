@@ -14,9 +14,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -57,7 +60,7 @@ public class PostController {
     @PutMapping("/{id}")
     public PostResponse updatePost(
             @Parameter(description = "ID of the post to update", example = "1")
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @RequestBody PostUpdateRequest request) {
         return postService.updatePost(id, request);
     }
@@ -74,7 +77,7 @@ public class PostController {
     @GetMapping("/{id}")
     public PostResponse getPostById(
             @Parameter(description = "ID of the post to retrieve", example = "1")
-            @PathVariable Long id) {
+            @PathVariable("id") Long id) {
         return postService.getPostById(id);
     }
 
@@ -88,20 +91,20 @@ public class PostController {
     @GetMapping
     public PageResponse<PostSummaryResponse> getAllPosts(
             @Parameter(description = "Page number (0-based)", example = "0")
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(name = "page", defaultValue = "0") int page, // Add name="page"
 
             @Parameter(description = "Number of items per page", example = "10")
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(name = "size", defaultValue = "10") int size, // Add name="size"
 
             @Parameter(description = "Sort field",
                     schema = @Schema(allowableValues = {"createdAt", "title", "views"}),
                     example = "createdAt")
-            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy, // Add name="sortBy"
 
             @Parameter(description = "Sort direction",
                     schema = @Schema(allowableValues = {"asc", "desc"}),
                     example = "desc")
-            @RequestParam(defaultValue = "desc") String direction) {
+            @RequestParam(name = "direction", defaultValue = "desc") String direction) { // Add name="direction"
         return postService.getAllPosts(page, size, sortBy, direction);
     }
 
@@ -118,7 +121,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(
             @Parameter(description = "ID of the post to delete", example = "1")
-            @PathVariable Long id) {
+            @PathVariable("id") Long id) {
         postService.deletePost(id);
     }
 
@@ -135,7 +138,7 @@ public class PostController {
     @PatchMapping("/{id}/status")
     public PostStatusResponse updatePostStatus(
             @Parameter(description = "ID of the post to update", example = "1")
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @RequestBody PostStatusRequest request) {
         return postService.updatePostStatus(id, request);
     }
@@ -166,7 +169,7 @@ public class PostController {
     @PostMapping(value = "/{id}/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public PostResponse uploadImage(
             @Parameter(description = "ID of the post to update", example = "1")
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
 
             @Parameter(
                     description = "Image file to upload (JPEG/PNG, max 5MB)",
@@ -209,4 +212,18 @@ public class PostController {
                     "File size exceeds maximum limit of 5MB");
         }
     }
+
+    @GetMapping("/category/{categoryId}")
+    @Operation(
+            summary = "Get posts by category",
+            description = "Retrieve a list of posts that belong to a specific category by its ID."
+    )
+    public ResponseEntity<List<PostResponse>> getPostsByCategory(
+            @Parameter(description = "ID of the category to retrieve posts from", example = "1")
+            @PathVariable("categoryId") Long categoryId) {
+
+        List<PostResponse> posts = postService.getPostsByCategory(categoryId);
+        return ResponseEntity.ok(posts);
+    }
+
 }

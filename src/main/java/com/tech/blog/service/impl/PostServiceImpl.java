@@ -158,6 +158,16 @@ public class PostServiceImpl implements PostService {
         return postMapper.toResponse(postRepository.save(post));
     }
 
+    @Override
+    @Transactional(readOnly = true) // Add this annotation
+    public List<PostResponse> getPostsByCategory(Long categoryId) {
+        List<Post> posts = postRepository.findByCategory_Id(categoryId);
+        return posts.stream()
+                .map(postMapper::toResponse)
+                .toList();
+    }
+
+
     private String extractPublicIdFromUrl(String url) {
         if (url == null) return null;
         String[] parts = url.split("/");
