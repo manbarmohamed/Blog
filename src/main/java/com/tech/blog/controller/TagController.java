@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,43 +31,26 @@ public class TagController {
 
     private final TagService tagService;
 
-    @Operation(
-            summary = "Create a new tag",
-            description = "Creates a new tag with the provided information"
-    )
+    @Operation(summary = "Create a new tag", description = "Creates a new tag if it doesn't already exist")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
                     description = "Tag created successfully",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = TagResponse.class)
-                    )
+                    content = @Content(schema = @Schema(implementation = TagResponse.class))
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Invalid input",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
-                    )
+                    description = "Invalid tag data supplied"
             ),
             @ApiResponse(
                     responseCode = "409",
-                    description = "Tag with same name already exists",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
-                    )
+                    description = "Tag already exists"
             )
     })
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TagResponse> createTag(@Valid @RequestBody TagCreateRequest request) {
-        log.info("REST request to create Tag");
+    public ResponseEntity<TagResponse> createTag(@RequestBody @Validated TagCreateRequest request) {
         TagResponse response = tagService.save(request);
-        return ResponseEntity.created(URI.create("/api/v1/tags/" + response.getId()))
-                .body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Operation(
