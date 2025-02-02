@@ -34,6 +34,19 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.category.id = :categoryId")
     List<Post> findByCategory_Id(@Param("categoryId") Long categoryId);
 
+    @Query("SELECT DISTINCT p FROM Post p " +
+            "JOIN p.tags t " +
+            "WHERE t.name = :tagName " +
+            "AND p.status = 'PUBLISHED' " +
+            "ORDER BY p.createdAt DESC")
+    List<Post> findPostsByTagName(@Param("tagName") String tagName);
+
+    @Query("SELECT DISTINCT p FROM Post p " +
+            "JOIN p.tags t " +
+            "WHERE t.id = :tagId " +
+            "AND p.status = 'PUBLISHED' " +
+            "ORDER BY p.createdAt DESC")
+    List<Post> findPostsByTagId(@Param("tagId") Long tagId);
 
 
 }

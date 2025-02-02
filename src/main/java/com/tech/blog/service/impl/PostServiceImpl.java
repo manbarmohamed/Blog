@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -165,6 +166,22 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::toResponse)
                 .toList();
+    }
+
+    @Override
+    public List<PostResponse> getPostsByTag(String tagName) {
+        List<Post> posts = postRepository.findPostsByTagName(tagName);
+        return posts.stream()
+                .map(postMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PostResponse> getPostsByTagId(Long tagId) {
+        List<Post> posts = postRepository.findPostsByTagId(tagId);
+        return posts.stream()
+                .map(postMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
 

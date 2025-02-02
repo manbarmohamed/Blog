@@ -7,6 +7,9 @@ import com.tech.blog.model.dto.response.PageResponse;
 import com.tech.blog.model.dto.response.PostResponse;
 import com.tech.blog.model.dto.response.PostStatusResponse;
 import com.tech.blog.model.dto.response.PostSummaryResponse;
+import com.tech.blog.model.entity.Post;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -20,4 +23,7 @@ public interface PostService {
     PostResponse updatePostImage(Long id, String imageUrl);
 
     List<PostResponse> getPostsByCategory(Long categoryId);
+
+    List<PostResponse> getPostsByTag(String tagName);
+    List<PostResponse> getPostsByTagId(Long tagId);
 }

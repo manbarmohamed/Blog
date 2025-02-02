@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -223,6 +224,80 @@ public class PostController {
             @PathVariable("categoryId") Long categoryId) {
 
         List<PostResponse> posts = postService.getPostsByCategory(categoryId);
+        return ResponseEntity.ok(posts);
+    }
+
+    @Operation(
+            summary = "Find posts by tag",
+            description = "Retrieves all published posts that have been tagged with the specified tag name"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved posts",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PostResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Tag not found",
+                    content = @Content
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid tag name supplied",
+                    content = @Content
+            )
+    })
+    @GetMapping("/by-tag/{tagName}")
+    public ResponseEntity<List<PostResponse>> findPostsByTag(
+            @Parameter(
+                    description = "Name of the tag to filter posts by",
+                    required = true,
+                    example = "spring-boot"
+            )
+            @PathVariable("tagName") String tagName
+    ) {
+        List<PostResponse> posts = postService.getPostsByTag(tagName);
+        return ResponseEntity.ok(posts);
+    }
+
+    @Operation(
+            summary = "Find posts by tag ID",
+            description = "Retrieves all published posts that have been tagged with the specified tag ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved posts",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PostResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Tag not found",
+                    content = @Content
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid tag ID supplied",
+                    content = @Content
+            )
+    })
+    @GetMapping("/by-tag/{id}")
+    public ResponseEntity<List<PostResponse>> findPostsByTag(
+            @Parameter(
+                    description = "ID of the tag to filter posts by",
+                    required = true,
+                    example = "1"
+            )
+            @PathVariable("id") Long id
+    ) {
+        List<PostResponse> posts = postService.getPostsByTagId(id);
         return ResponseEntity.ok(posts);
     }
 
