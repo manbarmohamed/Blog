@@ -85,6 +85,32 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
+    public PageResponse<PostPreviewDto> getPublishedPosts(int page, int size, String sortBy) {
+        // Create Pageable with dynamic sorting (default to DESC)
+        Sort sort = Sort.by(Sort.Direction.DESC, sortBy);
+        PageRequest pageable = PageRequest.of(page, size, sort);
+
+        // Fetch paginated results
+        Page<Post> postPage = postRepository.findAllPublishedPosts(pageable);
+
+        // Map to DTO using the enhanced mapper
+        List<PostPreviewDto> content = postPage.getContent()
+                .stream()
+                .map(postMapper::toPreviewDto)
+                .toList();
+
+        return PageResponse.<PostPreviewDto>builder()
+                .content(content)
+                .pageNo(postPage.getNumber())
+                .pageSize(postPage.getSize())
+                .totalElements(postPage.getTotalElements())
+                .totalPages(postPage.getTotalPages())
+                .last(postPage.isLast())
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PageResponse<PostSummaryResponse> getAllPosts(int page, int size, String sortBy, String direction) {
         Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
         PageRequest pageable = PageRequest.of(page, size, sort);
