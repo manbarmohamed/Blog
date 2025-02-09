@@ -23,7 +23,7 @@ public interface PostMapper {
     @Mapping(target = "status", constant = "DRAFT")
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
-    @Mapping(target = "views", constant = "0")
+    @Mapping(target = "views", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "comments", ignore = true)

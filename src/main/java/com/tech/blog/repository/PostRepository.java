@@ -38,7 +38,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "FROM Post p")
     Page<PostSummaryResponse> findAllPostSummaries(Pageable pageable);
 
-    @Query("SELECT p FROM Post p WHERE p.category.id = :categoryId")
+    @Query("SELECT p FROM Post p WHERE p.category.id = :categoryId and p.status = 'PUBLISHED'")
     List<Post> findByCategory_Id(@Param("categoryId") Long categoryId);
 
     @Query("SELECT DISTINCT p FROM Post p " +

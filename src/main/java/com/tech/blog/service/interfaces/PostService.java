@@ -17,8 +17,8 @@ public interface PostService {
     PostStatusResponse updatePostStatus(Long id, PostStatusRequest request);
     PostResponse updatePostImage(Long id, String imageUrl);
 
-    List<PostResponse> getPostsByCategory(Long categoryId);
+    List<PostPreviewDto> getPostsByCategory(Long categoryId);
 
-    List<PostResponse> getPostsByTag(String tagName);
-    List<PostResponse> getPostsByTagId(Long tagId);
+    List<PostPreviewDto> getPostsByTag(String tagName);
+    List<PostPreviewDto> getPostsByTagId(Long tagId);
 }

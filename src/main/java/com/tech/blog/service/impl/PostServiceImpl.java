@@ -80,6 +80,7 @@ public class PostServiceImpl implements PostService {
     public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        post.setViews(post.getViews()+1);
         return postMapper.toResponse(post);
     }
 
@@ -187,26 +188,26 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true) // Add this annotation
-    public List<PostResponse> getPostsByCategory(Long categoryId) {
+    public List<PostPreviewDto> getPostsByCategory(Long categoryId) {
         List<Post> posts = postRepository.findByCategory_Id(categoryId);
         return posts.stream()
-                .map(postMapper::toResponse)
+                .map(postMapper::toPreviewDto)
                 .toList();
     }
 
     @Override
-    public List<PostResponse> getPostsByTag(String tagName) {
+    public List<PostPreviewDto> getPostsByTag(String tagName) {
         List<Post> posts = postRepository.findPostsByTagName(tagName);
         return posts.stream()
-                .map(postMapper::toResponse)
+                .map(postMapper::toPreviewDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PostResponse> getPostsByTagId(Long tagId) {
+    public List<PostPreviewDto> getPostsByTagId(Long tagId) {
         List<Post> posts = postRepository.findPostsByTagId(tagId);
         return posts.stream()
-                .map(postMapper::toResponse)
+                .map(postMapper::toPreviewDto)
                 .collect(Collectors.toList());
     }
 
