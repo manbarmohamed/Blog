@@ -17,6 +17,13 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+    @Query("SELECT DISTINCT p FROM Post p " +
+            "LEFT JOIN FETCH p.user " +
+            "LEFT JOIN FETCH p.category " +
+            "LEFT JOIN FETCH p.tags " +
+            "WHERE p.status = 'PUBLISHED'")
+    Page<Post> findAllPublishedPosts(Pageable pageable);
+
     @Query("SELECT p FROM Post p LEFT JOIN FETCH p.user LEFT JOIN FETCH p.category LEFT JOIN FETCH p.tags WHERE p.id = :id")
     Optional<Post> findByIdWithAssociations(@Param("id") Long id);
 

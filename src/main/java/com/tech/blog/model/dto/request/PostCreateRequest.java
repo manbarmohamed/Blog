@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
@@ -17,8 +18,13 @@ public class PostCreateRequest {
     @Size(min = 3, max = 255)
     private String title;
 
-    @Schema(description = "Post content in HTML format", example = "<p>Spring Boot makes it easy...</p>", requiredMode = REQUIRED)
+    @Schema(
+            description = "Post content in HTML format. Content can include text, code blocks, and base64 images",
+            example = "<p>Spring Boot makes it easy...</p>",
+            requiredMode = REQUIRED
+    )
     @NotBlank
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String content;
 
     @Schema(description = "Category ID", example = "1", requiredMode = REQUIRED)

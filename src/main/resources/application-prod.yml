@@ -71,3 +71,4 @@ management:
   endpoint:
     health:
       show-details: never
+

@@ -1,5 +1,6 @@
 package com.tech.blog.controller;
 
+import com.tech.blog.exception.ResourceNotFoundException;
 import com.tech.blog.model.dto.request.*;
 import com.tech.blog.model.dto.response.*;
 import com.tech.blog.service.impl.ImageService;
@@ -7,11 +8,13 @@ import com.tech.blog.service.interfaces.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,20 +35,93 @@ public class PostController {
     private final ImageService imageService;
 
     @Operation(
-            summary = "Create new post",
-            description = "Create a new blog post with title, content, category and tags",
+            summary = "Create a New Blog Post",
+            description = "Endpoint for creating a new blog post with comprehensive details. " +
+                    "Requires a valid post creation request with title, content, category, and optional tags.",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Post created successfully"),
-                    @ApiResponse(responseCode = "400", description = "Invalid input",
-                            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden")
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Post successfully created",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = PostResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Validation Error - Invalid input data",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Title Validation Error",
+                                                    value = "{\"message\": \"Title must be between 3 and 255 characters\", \"status\": 400}"
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Content Validation Error",
+                                                    value = "{\"message\": \"Content cannot be empty\", \"status\": 400}"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - Authentication required",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Insufficient permissions",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Resource Not Found - Category or Tags not exist",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    )
             }
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PostResponse createPost(@Valid @RequestBody PostCreateRequest request) {
-        return postService.createPost(request);
+    public PostResponse createPost(
+            @Parameter(
+                    name = "postCreateRequest",
+                    description = "Post creation request payload",
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PostCreateRequest.class)
+                    )
+            )
+            @Valid
+            @RequestBody
+            PostCreateRequest request
+    ) {
+        try {
+            return postService.createPost(request);
+        } catch (ResourceNotFoundException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Referenced category or tags not found",
+                    ex
+            );
+        } catch (ValidationException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Validation failed: " + ex.getMessage(),
+                    ex
+            );
+        }
     }
 
     @Operation(
@@ -83,6 +159,32 @@ public class PostController {
     }
 
     @Operation(
+            summary = "Get all published posts",
+            description = "Retrieve a paginated list of all published posts with sorting options.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Published posts retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = PageResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input",
+                            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
+    @GetMapping("/published")
+    public PageResponse<PostPreviewDto> findAllPublishedPosts(
+            @Parameter(description = "Page number (0-based)", example = "0")
+            @RequestParam(name = "page", defaultValue = "0") int page,
+
+            @Parameter(description = "Number of items per page", example = "10")
+            @RequestParam(name = "size", defaultValue = "10") int size,
+
+            @Parameter(description = "Sort field",
+                    schema = @Schema(allowableValues = {"createdAt", "title", "views"}),
+                    example = "createdAt")
+            @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy) {
+
+        return postService.getPublishedPosts(page, size, sortBy);
+    }
+
+    @Operation(
             summary = "Get all posts",
             description = "Get paginated list of posts with sorting options",
             responses = {
@@ -92,15 +194,15 @@ public class PostController {
     @GetMapping
     public PageResponse<PostSummaryResponse> getAllPosts(
             @Parameter(description = "Page number (0-based)", example = "0")
-            @RequestParam(name = "page", defaultValue = "0") int page, // Add name="page"
+            @RequestParam(name = "page", defaultValue = "0") int page,
 
             @Parameter(description = "Number of items per page", example = "10")
-            @RequestParam(name = "size", defaultValue = "10") int size, // Add name="size"
+            @RequestParam(name = "size", defaultValue = "10") int size,
 
             @Parameter(description = "Sort field",
                     schema = @Schema(allowableValues = {"createdAt", "title", "views"}),
                     example = "createdAt")
-            @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy, // Add name="sortBy"
+            @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
 
             @Parameter(description = "Sort direction",
                     schema = @Schema(allowableValues = {"asc", "desc"}),
