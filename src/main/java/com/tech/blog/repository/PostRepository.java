@@ -55,5 +55,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "ORDER BY p.createdAt DESC")
     List<Post> findPostsByTagId(@Param("tagId") Long tagId);
 
+    @Query("SELECT p FROM Post p " +
+            "WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "AND p.status = 'PUBLISHED'")
+    List<Post> searchPublishedByTitle(@Param("keyword") String keyword);
+
+
 
 }

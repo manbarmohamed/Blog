@@ -211,6 +211,15 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostPreviewDto> searchPosts(String keyword) {
+        List<Post> posts = postRepository.searchPublishedByTitle(keyword);
+        return posts.stream()
+                .map(postMapper::toPreviewDto)
+                .collect(Collectors.toList());
+    }
+
 
     private String extractPublicIdFromUrl(String url) {
         if (url == null) return null;

@@ -21,4 +21,6 @@ public interface PostService {
 
     List<PostPreviewDto> getPostsByTag(String tagName);
     List<PostPreviewDto> getPostsByTagId(Long tagId);
+
+    List<PostPreviewDto> searchPosts(String keyword);
 }

@@ -22,6 +22,7 @@ public class Post {
     private String title;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(columnDefinition = "TEXT")
     private String content;
 

@@ -403,4 +403,20 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
+    @GetMapping("/search")
+    @Operation(
+            summary = "Search posts by keyword",
+            description = "Returns a list of post previews matching the given keyword in their title"
+    )
+    public List<PostPreviewDto> searchPosts(
+            @Parameter(
+                    description = "Keyword to search in post titles",
+                    required = true,
+                    example = "news"
+            )
+            @RequestParam(name = "keyword") String keyword
+    ) {
+        return postService.searchPosts(keyword);
+    }
+
 }
