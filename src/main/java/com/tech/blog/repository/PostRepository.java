@@ -41,7 +41,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "FROM Post p")
     Page<PostSummaryResponse> findAllPostSummaries(Pageable pageable);
 
-    @Query("SELECT p FROM Post p WHERE p.category.id = :categoryId")
+    @Query("SELECT p FROM Post p WHERE p.category.id = :categoryId and p.status = 'PUBLISHED'")
     List<Post> findByCategory_Id(@Param("categoryId") Long categoryId);
 
     @Query("SELECT DISTINCT p FROM Post p " +
@@ -57,6 +57,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "AND p.status = 'PUBLISHED' " +
             "ORDER BY p.createdAt DESC")
     List<Post> findPostsByTagId(@Param("tagId") Long tagId);
+
+    @Query("SELECT p FROM Post p " +
+            "WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "AND p.status = 'PUBLISHED'")
+    List<Post> searchPublishedByTitle(@Param("keyword") String keyword);
+
 
 
 }

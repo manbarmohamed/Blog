@@ -321,11 +321,11 @@ public class PostController {
             summary = "Get posts by category",
             description = "Retrieve a list of posts that belong to a specific category by its ID."
     )
-    public ResponseEntity<List<PostResponse>> getPostsByCategory(
+    public ResponseEntity<List<PostPreviewDto>> getPostsByCategory(
             @Parameter(description = "ID of the category to retrieve posts from", example = "1")
             @PathVariable("categoryId") Long categoryId) {
 
-        List<PostResponse> posts = postService.getPostsByCategory(categoryId);
+        List<PostPreviewDto> posts = postService.getPostsByCategory(categoryId);
         return ResponseEntity.ok(posts);
     }
 
@@ -354,7 +354,7 @@ public class PostController {
             )
     })
     @GetMapping("/by-tag/{tagName}")
-    public ResponseEntity<List<PostResponse>> findPostsByTag(
+    public ResponseEntity<List<PostPreviewDto>> findPostsByTag(
             @Parameter(
                     description = "Name of the tag to filter posts by",
                     required = true,
@@ -362,7 +362,7 @@ public class PostController {
             )
             @PathVariable("tagName") String tagName
     ) {
-        List<PostResponse> posts = postService.getPostsByTag(tagName);
+        List<PostPreviewDto> posts = postService.getPostsByTag(tagName);
         return ResponseEntity.ok(posts);
     }
 
@@ -391,7 +391,7 @@ public class PostController {
             )
     })
     @GetMapping("/by-tag/{id}")
-    public ResponseEntity<List<PostResponse>> findPostsByTag(
+    public ResponseEntity<List<PostPreviewDto>> findPostsByTag(
             @Parameter(
                     description = "ID of the tag to filter posts by",
                     required = true,
@@ -399,8 +399,24 @@ public class PostController {
             )
             @PathVariable("id") Long id
     ) {
-        List<PostResponse> posts = postService.getPostsByTagId(id);
+        List<PostPreviewDto> posts = postService.getPostsByTagId(id);
         return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/search")
+    @Operation(
+            summary = "Search posts by keyword",
+            description = "Returns a list of post previews matching the given keyword in their title"
+    )
+    public List<PostPreviewDto> searchPosts(
+            @Parameter(
+                    description = "Keyword to search in post titles",
+                    required = true,
+                    example = "news"
+            )
+            @RequestParam(name = "keyword") String keyword
+    ) {
+        return postService.searchPosts(keyword);
     }
 
 }
