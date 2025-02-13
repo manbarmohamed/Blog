@@ -1,9 +1,6 @@
 package com.tech.blog.service.impl;
 
-import com.tech.blog.exception.BlogApiException;
 import com.tech.blog.exception.ResourceNotFoundException;
-import com.tech.blog.mapper.LikeMapper;
-import com.tech.blog.model.dto.request.LikeRequest;
 import com.tech.blog.model.dto.response.LikeResponse;
 import com.tech.blog.model.entity.Like;
 import com.tech.blog.model.entity.Post;
@@ -14,66 +11,81 @@ import com.tech.blog.repository.UserRepository;
 import com.tech.blog.service.interfaces.LikeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 
-@Slf4j
 @Service
-@Validated
 @RequiredArgsConstructor
+@Slf4j
 public class LikeServiceImpl implements LikeService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final LikeMapper likeMapper;
 
     @Override
     @Transactional
-    public LikeResponse toggleLike(Long userId, LikeRequest request) {
-        log.debug("Toggling like for user {} on post {}", userId, request.getPostId());
+    public LikeResponse toggleLike(Long userId, Long postId) {
+        User user = findUserById(userId);
+        Post post = findPostById(postId);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        var existingLike = likeRepository.findByUserIdAndPostId(userId, postId);
+        boolean hasLiked;
+        String message;
 
-        Post post = postRepository.findById(request.getPostId())
-                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", request.getPostId()));
-
-        try {
-            var existingLike = likeRepository.findByUserIdAndPostId(userId, request.getPostId());
-
-            if (existingLike.isPresent()) {
-                likeRepository.delete(existingLike.get());
-                log.debug("Deleted like for user {} on post {}", userId, request.getPostId());
-                return null;
-            }
-
-            Like newLike = new Like();
-            newLike.setUser(user);
-            newLike.setPost(post);
-            newLike.setCreatedAt(LocalDateTime.now());
-
-            Like savedLike = likeRepository.save(newLike);
-            log.debug("Created new like {} for user {} on post {}", savedLike.getId(), userId, request.getPostId());
-            return likeMapper.toResponse(savedLike);
-        } catch (DataIntegrityViolationException e) {
-            log.error("Failed to toggle like for user {} on post {}", userId, request.getPostId(), e);
-            throw new BlogApiException("Failed to process like operation");
+        if (existingLike.isPresent()) {
+            likeRepository.delete(existingLike.get());
+            hasLiked = false;
+            message = "Post unliked successfully";
+            log.info("User {} unliked post {}", userId, postId);
+        } else {
+            Like newLike = createNewLike(user, post);
+            likeRepository.save(newLike);
+            hasLiked = true;
+            message = "Post liked successfully";
+            log.info("User {} liked post {}", userId, postId);
         }
+
+        long likeCount = likeRepository.countByPostId(postId);
+        return buildLikeResponse(likeCount, hasLiked, message);
     }
 
     @Override
-    public boolean hasUserLiked(Long userId, Long postId) {
-        log.debug("Checking if user {} has liked post {}", userId, postId);
-        return likeRepository.existsByUserIdAndPostId(userId, postId);
+    public LikeResponse getLikeInfo(Long userId, Long postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new ResourceNotFoundException("Post not found with id: " + postId);
+        }
+
+        boolean hasLiked = likeRepository.existsByUserIdAndPostId(userId, postId);
+        long likeCount = likeRepository.countByPostId(postId);
+
+        return buildLikeResponse(likeCount, hasLiked, "Like information retrieved successfully");
     }
 
-    @Override
-    public long getLikeCount(Long postId) {
-        log.debug("Getting like count for post {}", postId);
-        return likeRepository.countByPostId(postId);
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+    }
+
+    private Post findPostById(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+    }
+
+    private Like createNewLike(User user, Post post) {
+        Like like = new Like();
+        like.setUser(user);
+        like.setPost(post);
+        like.setCreatedAt(LocalDateTime.now());
+        return like;
+    }
+
+    private LikeResponse buildLikeResponse(long likeCount, boolean hasLiked, String message) {
+        return LikeResponse.builder()
+                .likeCount(likeCount)
+                .hasUserLiked(hasLiked)
+                .message(message)
+                .build();
     }
 }

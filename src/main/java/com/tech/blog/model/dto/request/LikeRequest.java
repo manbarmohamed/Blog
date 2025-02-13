@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 @Data
 public class LikeRequest {
-    @NotNull(message = "Post ID is required")
-    private Long postId;
+    @NotNull(message = "User ID is required")
+    private Long userId;
 }

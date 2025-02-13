@@ -1,14 +1,23 @@
 package com.tech.blog.service.interfaces;
 
-import com.tech.blog.model.dto.request.LikeRequest;
 import com.tech.blog.model.dto.response.LikeResponse;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.validation.annotation.Validated;
 
-@Validated
 public interface LikeService {
-    LikeResponse toggleLike(@NotNull Long userId, @Valid @NotNull LikeRequest request);
-    boolean hasUserLiked(@NotNull Long userId, @NotNull Long postId);
-    long getLikeCount(@NotNull Long postId);
+    /**
+     * Toggles like status and returns updated like information
+     *
+     * @param userId ID of the user performing the action
+     * @param postId ID of the post being liked/unliked
+     * @return LikeResponse containing updated like status and count
+     */
+    LikeResponse toggleLike(Long userId, Long postId);
+
+    /**
+     * Gets like information for a post
+     *
+     * @param userId ID of the user requesting information
+     * @param postId ID of the post
+     * @return LikeResponse containing like status and count
+     */
+    LikeResponse getLikeInfo(Long userId, Long postId);
 }
