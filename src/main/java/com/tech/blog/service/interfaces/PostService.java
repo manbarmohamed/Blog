@@ -16,9 +16,8 @@ public interface PostService {
     void deletePost(Long id);
     PostStatusResponse updatePostStatus(Long id, PostStatusRequest request);
     PostResponse updatePostImage(Long id, String imageUrl);
-
     List<PostResponse> getPostsByCategory(Long categoryId);
-
     List<PostResponse> getPostsByTag(String tagName);
     List<PostResponse> getPostsByTagId(Long tagId);
+
 }

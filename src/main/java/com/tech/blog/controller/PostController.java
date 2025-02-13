@@ -144,7 +144,7 @@ public class PostController {
 
     @Operation(
             summary = "Get post by ID",
-            description = "Retrieve a single post with full details",
+            description = "Retrieve a single post with full details and increment view count",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Post found"),
                     @ApiResponse(responseCode = "404", description = "Post not found",

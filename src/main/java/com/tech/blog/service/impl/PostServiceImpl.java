@@ -35,7 +35,6 @@ public class PostServiceImpl implements PostService {
     public PostResponse createPost(PostCreateRequest request) {
         Post post = postMapper.toEntity(request);
 
-        // Temporary hardcoded user - replace with actual implementation
         User author = userRepository.findById(1L)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", 1L));
         post.setUser(author);
@@ -76,24 +75,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        postRepository.incrementViews(id);
         return postMapper.toResponse(post);
     }
 
     @Override
     @Transactional(readOnly = true)
     public PageResponse<PostPreviewDto> getPublishedPosts(int page, int size, String sortBy) {
-        // Create Pageable with dynamic sorting (default to DESC)
         Sort sort = Sort.by(Sort.Direction.DESC, sortBy);
         PageRequest pageable = PageRequest.of(page, size, sort);
 
-        // Fetch paginated results
         Page<Post> postPage = postRepository.findAllPublishedPosts(pageable);
 
-        // Map to DTO using the enhanced mapper
         List<PostPreviewDto> content = postPage.getContent()
                 .stream()
                 .map(postMapper::toPreviewDto)
@@ -186,7 +183,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional(readOnly = true) // Add this annotation
+    @Transactional(readOnly = true)
     public List<PostResponse> getPostsByCategory(Long categoryId) {
         List<Post> posts = postRepository.findByCategory_Id(categoryId);
         return posts.stream()
